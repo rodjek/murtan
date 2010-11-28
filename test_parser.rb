@@ -12,4 +12,4 @@ pass in proto icmp
 EOS
 
 foo = Parser.new.parse(code)
-p foo.to_iptables.flatten
+foo.to_iptables.flatten.each { |rule| puts rule }
