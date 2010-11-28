@@ -69,17 +69,30 @@ rule
   ;
 
   Filter:
-    ACTION Direction Log          { result = FilterNode.new(val[0], val[1], val[2]) }
+    ACTION Direction Log 
+      Interface                   { result = FilterNode.new(val[0], val[1], val[2],
+                                        val[3]) }
   ;
 
   Direction:
     /* nothing */                 { result = nil }
-  | DIRECTION                     { result = DirectionNode.new(val[0]) }
+  | DIRECTION                     { result = DirectionNode.new(val[0].to_sym) }
   ;
 
   Log:
     /* nothing */                 { result = false }
   | LOG                           { result = true }
+  ;
+
+  Interface:
+    /* nothing */                 { result = [] }
+  | ON IDENTIFIER                 { result = [InterfaceNode.new(val[1])] }
+  | ON "{" InterfaceList "}"      { result = val[2] }
+  ;
+
+  InterfaceList:
+    IDENTIFIER                    { result = [InterfaceNode.new(val[0])] }
+  | InterfaceList IDENTIFIER      { result = val[0] << InterfaceNode.new(val[1]) }
   ;
 
 end

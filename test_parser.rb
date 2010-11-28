@@ -4,9 +4,8 @@ require 'parser.rb'
 # block out log on eth1 from any to 10.0.0.1 port 1234 no state
 
 code = <<-EOS
-pass in log
-block out
-pass
+pass in log on { eth0 eth2 }
+block out on eth1
 EOS
 
 foo = Parser.new.parse(code)

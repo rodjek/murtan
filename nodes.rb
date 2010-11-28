@@ -23,10 +23,11 @@ class LiteralNode
 end
 
 class FilterNode
-  def initialize(action, direction, log)
+  def initialize(action, direction, log, interfaces)
     @action = action
     @direction = direction
     @log = log
+    @interfaces = interfaces
   end
 
   def to_iptables
@@ -36,24 +37,48 @@ class FilterNode
       chain = "REJECT"
     end
 
-    "#{@direction.to_iptables unless @direction.nil?}" +
-    " -J #{chain}"
+    rules = []
+
+    @interfaces.each do |int|
+      rules << "#{@direction.to_iptables unless @direction.nil?}" +
+      "#{int.to_iptables(@direction.value)}" +
+      " -J #{chain}"
+    end
+    rules
   end
 end
 
 class DirectionNode
+  attr_reader :value
+
   def initialize(value)
     @value = value
   end
 
   def to_iptables
-    if @value == "in"
+    if @value == :in
       chain = "INPUT"
-    elsif @value == "out"
+    elsif @value == :out
       chain = "OUTPUT"
     else
       raise "Invalid direction #{@value}"
     end
     "-A #{chain}"
+  end
+end
+
+class InterfaceNode
+  attr_reader :value
+
+  def initialize(value)
+    @value = value
+  end
+
+  def to_iptables(direction)
+    if direction == :in
+      " -i #{@value}"
+    else
+      " -o #{@value}"
+    end
   end
 end
