@@ -85,7 +85,7 @@ rule
   ;
 
   Interface:
-    /* nothing */                 { result = [] }
+    /* nothing */                 { result = [BlankNode.new] }
   | ON IDENTIFIER                 { result = [InterfaceNode.new(val[1])] }
   | ON "{" InterfaceList "}"      { result = val[2] }
   ;
@@ -96,7 +96,7 @@ rule
   ;
 
   Protocol:
-    /* nothing */                    { result = [] }
+    /* nothing */                    { result = [BlankNode.new] }
   | PROTO PROTOCOL                   { result = [ProtocolNode.new(val[1])] }
   | PROTO "{" ProtocolList "}"       { result = val[2] }
   ;

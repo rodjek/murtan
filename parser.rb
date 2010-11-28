@@ -287,7 +287,7 @@ module_eval(<<'.,.,', 'grammar.y', 83)
 
 module_eval(<<'.,.,', 'grammar.y', 87)
   def _reduce_16(val, _values, result)
-     result = [] 
+     result = [BlankNode.new] 
     result
   end
 .,.,
@@ -322,7 +322,7 @@ module_eval(<<'.,.,', 'grammar.y', 94)
 
 module_eval(<<'.,.,', 'grammar.y', 98)
   def _reduce_21(val, _values, result)
-     result = [] 
+     result = [BlankNode.new] 
     result
   end
 .,.,

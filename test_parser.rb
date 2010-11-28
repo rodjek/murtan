@@ -8,6 +8,7 @@ require 'parser.rb'
 code = <<-EOS
 pass in log on { eth0 eth2 } proto { tcp icmp }
 block out on eth1 proto { tcp udp }
+pass in proto icmp
 EOS
 
 foo = Parser.new.parse(code)

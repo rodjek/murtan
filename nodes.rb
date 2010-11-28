@@ -52,6 +52,12 @@ class FilterNode
   end
 end
 
+class BlankNode
+  def to_iptables(*args)
+    ""
+  end
+end
+
 class DirectionNode
   attr_reader :value
 
