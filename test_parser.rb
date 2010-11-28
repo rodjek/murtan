@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+`racc -o parser.rb grammer.y`
+
 require 'parser.rb'
 
 # pass in on eth0 proto tcp from { 10.0.0.0/24 1.2.3.4 } port 22 to any port 33 keep state

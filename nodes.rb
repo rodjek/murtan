@@ -23,12 +23,13 @@ class LiteralNode
 end
 
 class FilterNode
-  def initialize(action, direction, log, interfaces, protocols)
+  def initialize(action, direction, log, interfaces, protocols, destinations)
     @action = action
     @direction = direction
     @log = log
     @interfaces = interfaces
     @protocols = protocols
+    @destinations = destinations
   end
 
   def to_iptables

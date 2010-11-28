@@ -70,7 +70,7 @@ rule
 
   Filter:
     ACTION Direction Log 
-      Interface Protocol          { result = FilterNode.new(val[0], val[1], val[2],
+      Interface Protocol From     { result = FilterNode.new(val[0], val[1], val[2],
                                         val[3], val[4]) }
   ;
 
@@ -104,6 +104,17 @@ rule
   ProtocolList:
     PROTOCOL                      { result = [ProtocolNode.new(val[0])] }
   | ProtocolList PROTOCOL         { result = val[0] << ProtocolNode.new(val[1]) }
+  ;
+
+  From:
+    /* nothing */                 { result = [BlankNode.new] }
+  | FROM IPADDRESS                { result = [IPNode.new(val[1], :dest)] }
+  | FROM "{" FromList "}"         { result = val[2] }
+  ;
+
+  FromList:
+    IPADDRESS                     { result = [IPNode.new(val[0], :dest)] }
+  | FromList IPADDRESS            { result = val[0] << IPNode.new(val[1], :dest) }
   ;
 
 end
