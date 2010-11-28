@@ -23,11 +23,12 @@ class LiteralNode
 end
 
 class FilterNode
-  def initialize(action, direction, log, interfaces)
+  def initialize(action, direction, log, interfaces, protocols)
     @action = action
     @direction = direction
     @log = log
     @interfaces = interfaces
+    @protocols = protocols
   end
 
   def to_iptables
@@ -40,9 +41,12 @@ class FilterNode
     rules = []
 
     @interfaces.each do |int|
-      rules << "#{@direction.to_iptables unless @direction.nil?}" +
-      "#{int.to_iptables(@direction.value)}" +
-      " -J #{chain}"
+      @protocols.each do |proto|
+        rules << "#{@direction.to_iptables unless @direction.nil?}" +
+        "#{int.to_iptables(@direction.value)}" +
+        proto.to_iptables +
+        " -J #{chain}"
+      end
     end
     rules
   end
@@ -80,5 +84,15 @@ class InterfaceNode
     else
       " -o #{@value}"
     end
+  end
+end
+
+class ProtocolNode
+  def initialize(value)
+    @value = value
+  end
+
+  def to_iptables
+    " -p #{@value}"
   end
 end

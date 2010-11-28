@@ -11,7 +11,7 @@ require 'racc/parser.rb'
 
 class Parser < Racc::Parser
 
-module_eval(<<'...end grammar.y/module_eval...', 'grammar.y', 105)
+module_eval(<<'...end grammar.y/module_eval...', 'grammar.y', 116)
   def parse(code, show_tokens=true)
     @tokens = Lexer.new.tokenize(code)
     puts @tokens.inspect if show_tokens
@@ -25,38 +25,42 @@ module_eval(<<'...end grammar.y/module_eval...', 'grammar.y', 105)
 ##### State transition tables begin ###
 
 racc_action_table = [
-    22,    13,    18,     9,    12,     8,     1,    15,     7,    20,
-     1,   nil,   nil,   nil,   nil,   nil,    21,    17 ]
+    30,    26,    24,    18,    15,    13,     1,    12,     9,    20,
+    22,     8,     7,    27,     1,   nil,   nil,    25,    17,   nil,
+    29,    23 ]
 
 racc_action_check = [
-    19,     8,    15,     3,     6,     2,    10,    11,     1,    17,
-     0,   nil,   nil,   nil,   nil,   nil,    19,    15 ]
+    28,    21,    20,    15,    11,     8,    10,     6,     3,    16,
+    17,     2,     1,    23,     0,   nil,   nil,    21,    15,   nil,
+    28,    20 ]
 
 racc_action_pointer = [
-     8,     5,     5,    -3,   nil,   nil,    -9,   nil,     1,   nil,
-     4,    -5,   nil,   nil,   nil,    -7,   nil,     0,   nil,    -9,
-   nil,   nil,   nil ]
+    12,     9,    11,     2,   nil,   nil,    -6,   nil,     5,   nil,
+     4,    -8,   nil,   nil,   nil,    -6,    -8,     1,   nil,   nil,
+    -3,    -8,   nil,     8,   nil,   nil,   nil,   nil,    -5,   nil,
+   nil ]
 
 racc_action_default = [
-    -1,   -12,   -21,    -2,    -3,    -6,   -14,   -13,   -21,    -7,
-    -5,   -16,   -15,    23,    -4,   -21,   -11,   -21,   -17,   -21,
-   -19,   -18,   -20 ]
+    -1,   -12,   -26,    -2,    -3,    -6,   -14,   -13,   -26,    -7,
+    -5,   -16,   -15,    31,    -4,   -26,   -21,   -26,   -17,   -11,
+   -26,   -26,   -19,   -26,   -22,   -18,   -20,   -24,   -26,   -23,
+   -25 ]
 
 racc_goto_table = [
-     4,     6,     2,    10,     3,    11,    16,    19,   nil,   nil,
+     4,    11,     2,    10,     6,     3,    16,    19,    21,    28,
     14 ]
 
 racc_goto_check = [
-     3,     7,     1,     4,     2,     8,     9,    10,   nil,   nil,
+     3,     8,     1,     4,     7,     2,     9,    10,    11,    12,
      3 ]
 
 racc_goto_pointer = [
-   nil,     2,     4,     0,     0,   nil,   nil,     0,    -1,    -5,
-   -10 ]
+   nil,     2,     5,     0,     0,   nil,   nil,     3,    -5,    -5,
+    -9,    -9,   -14 ]
 
 racc_goto_default = [
    nil,   nil,   nil,   nil,   nil,     5,   nil,   nil,   nil,   nil,
-   nil ]
+   nil,   nil,   nil ]
 
 racc_reduce_table = [
   0, 0, :racc_error,
@@ -70,7 +74,7 @@ racc_reduce_table = [
   1, 32, :_reduce_8,
   1, 32, :_reduce_9,
   1, 32, :_reduce_10,
-  4, 31, :_reduce_11,
+  5, 31, :_reduce_11,
   0, 33, :_reduce_12,
   1, 33, :_reduce_13,
   0, 34, :_reduce_14,
@@ -78,12 +82,17 @@ racc_reduce_table = [
   0, 35, :_reduce_16,
   2, 35, :_reduce_17,
   4, 35, :_reduce_18,
-  1, 36, :_reduce_19,
-  2, 36, :_reduce_20 ]
+  1, 37, :_reduce_19,
+  2, 37, :_reduce_20,
+  0, 36, :_reduce_21,
+  2, 36, :_reduce_22,
+  4, 36, :_reduce_23,
+  1, 38, :_reduce_24,
+  2, 38, :_reduce_25 ]
 
-racc_reduce_n = 21
+racc_reduce_n = 26
 
-racc_shift_n = 23
+racc_shift_n = 31
 
 racc_token_table = {
   false => 0,
@@ -170,7 +179,9 @@ Racc_token_to_s_table = [
   "Direction",
   "Log",
   "Interface",
-  "InterfaceList" ]
+  "Protocol",
+  "InterfaceList",
+  "ProtocolList" ]
 
 Racc_debug_parser = false
 
@@ -241,7 +252,7 @@ module_eval(<<'.,.,', 'grammar.y', 67)
 module_eval(<<'.,.,', 'grammar.y', 72)
   def _reduce_11(val, _values, result)
      result = FilterNode.new(val[0], val[1], val[2],
-                                        val[3]) 
+                                        val[3], val[4]) 
     result
   end
 .,.,
@@ -305,6 +316,41 @@ module_eval(<<'.,.,', 'grammar.y', 93)
 module_eval(<<'.,.,', 'grammar.y', 94)
   def _reduce_20(val, _values, result)
      result = val[0] << InterfaceNode.new(val[1]) 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'grammar.y', 98)
+  def _reduce_21(val, _values, result)
+     result = [] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'grammar.y', 99)
+  def _reduce_22(val, _values, result)
+     result = [ProtocolNode.new(val[1])] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'grammar.y', 100)
+  def _reduce_23(val, _values, result)
+     result = val[2] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'grammar.y', 104)
+  def _reduce_24(val, _values, result)
+     result = [ProtocolNode.new(val[0])] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'grammar.y', 105)
+  def _reduce_25(val, _values, result)
+     result = val[0] << ProtocolNode.new(val[1]) 
     result
   end
 .,.,

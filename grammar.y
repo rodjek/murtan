@@ -70,8 +70,8 @@ rule
 
   Filter:
     ACTION Direction Log 
-      Interface                   { result = FilterNode.new(val[0], val[1], val[2],
-                                        val[3]) }
+      Interface Protocol          { result = FilterNode.new(val[0], val[1], val[2],
+                                        val[3], val[4]) }
   ;
 
   Direction:
@@ -93,6 +93,17 @@ rule
   InterfaceList:
     IDENTIFIER                    { result = [InterfaceNode.new(val[0])] }
   | InterfaceList IDENTIFIER      { result = val[0] << InterfaceNode.new(val[1]) }
+  ;
+
+  Protocol:
+    /* nothing */                    { result = [] }
+  | PROTO PROTOCOL                   { result = [ProtocolNode.new(val[1])] }
+  | PROTO "{" ProtocolList "}"       { result = val[2] }
+  ;
+
+  ProtocolList:
+    PROTOCOL                      { result = [ProtocolNode.new(val[0])] }
+  | ProtocolList PROTOCOL         { result = val[0] << ProtocolNode.new(val[1]) }
   ;
 
 end
