@@ -22,8 +22,12 @@ class Lexer
       
       # Matching standard tokens
       
+      if variable = chunk[/\A(\S+\s*)=/, 1]
+        tokens << [:VARIABLE_NAME, variable.strip]
+        tokens << ["=", "="]
+        i += variable.size + 1
       # Matching if, print, method names, etc
-      if identifier = chunk[/\A([a-z]\w*)/, 1]
+      elsif identifier = chunk[/\A([a-z]\w*)/, 1]
         # Keywords are special identifiers tagged with their own name, 'if'
         # will result in an [:IF, "if"] token
         if KEYWORDS.include? identifier
@@ -42,7 +46,7 @@ class Lexer
         end
         # Skip what we just parsed
         i += identifier.size
-        
+
       elsif ip = chunk[/\A(([0-9]+\.){3}[0-9]+(\/[0-9]+)?)/, 1]
         tokens << [:IPADDRESS, ip]
         i += ip.size

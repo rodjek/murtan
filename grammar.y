@@ -23,6 +23,7 @@ token KEEP
 token NO
 token STATE
 token IPADDRESS
+token VARIABLE_NAME
 
 rule
   # All rules are declared in this format
@@ -54,11 +55,31 @@ rule
   # All types of expressions in our language
   Expression:
     Filter
+  | SetVariable
   ;
 
   # All tokens that can terminate an expression
   Terminator:
     NEWLINE
+  ;
+
+  SetVariable:
+    VARIABLE_NAME "=" STRING      { result = MurtanNode.set_variable(val[0], val[2]) }
+  | VARIABLE_NAME "=" 
+    "{" StringList "}"            { result = MurtanNode.set_variable(val[0], val[3]) }
+  ;
+
+  StringList:
+    StringListItem                { result = [val[0]] }
+  | StringList StringListItem     { result = val[0] << val[1] }
+  ;
+
+  StringListItem:
+    IDENTIFIER                    { result = val[0] }
+  | PROTOCOL                      { result = val[0] }
+  | NUMBER                        { result = val[0] }
+  | IPADDRESS                     { result = val[0] }
+  | STRING                        { result = val[0] }
   ;
 
   Filter:

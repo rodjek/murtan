@@ -12,19 +12,35 @@ class Nodes
   end
 
   def to_iptables
-    @nodes.map { |node| node.to_iptables }
+    @nodes.compact.map { |node| node.to_iptables }
+  end
+end
+
+class MurtanNode
+  def self.set_variable(key, value)
+    class_variable_set("@@#{key}".to_sym, value)
+    nil
+  end
+
+  def self.get_variable(key)
+    key_sym = "@@#{key}".to_sym
+    if class_variable_defined? key_sym
+      class_variable_get("@@#{key}".to_sym)
+    else
+      raise "Undefined variable $#{key} used.  Aborting"
+    end
   end
 end
 
 # Literals are static values that have a Ruby representation. eg.: a string,
 # a number, true, false, nil, etc.
-class LiteralNode
+class LiteralNode < MurtanNode
   def initialize(value)
     @value = value
   end
 end
 
-class FilterNode
+class FilterNode < MurtanNode
   def initialize(action, block_type, direction, log, interfaces, protocols, sources, sports, dests, dports, state)
     @action = action
     @block_type = block_type
@@ -77,13 +93,13 @@ class FilterNode
   end
 end
 
-class BlankNode
+class BlankNode < MurtanNode
   def to_iptables(*args)
     ""
   end
 end
 
-class DirectionNode
+class DirectionNode < MurtanNode
   attr_reader :value
 
   def initialize(value)
@@ -102,7 +118,7 @@ class DirectionNode
   end
 end
 
-class InterfaceNode
+class InterfaceNode < MurtanNode
   attr_reader :value
 
   def initialize(value)
@@ -118,7 +134,7 @@ class InterfaceNode
   end
 end
 
-class ProtocolNode
+class ProtocolNode < MurtanNode
   def initialize(value)
     @value = value
   end
@@ -128,7 +144,7 @@ class ProtocolNode
   end
 end
 
-class IPNode
+class IPNode < MurtanNode
   def initialize(value, direction)
     data = value.split("/")
     ip = data.first
@@ -153,7 +169,7 @@ class IPNode
   end
 end
 
-class PortNode
+class PortNode < MurtanNode
   def initialize(value, type)
     @value = value
     @type = type
