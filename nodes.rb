@@ -1,3 +1,5 @@
+require 'ipaddr'
+
 # Collection of nodes each one representing an expression
 class Nodes
   def initialize(nodes)
@@ -23,33 +25,55 @@ class LiteralNode
 end
 
 class FilterNode
-  def initialize(action, direction, log, interfaces, protocols, destinations)
+  def initialize(action, block_type, direction, log, interfaces, protocols, sources, sports, dests, dports, state)
     @action = action
+    @block_type = block_type
     @direction = direction
     @log = log
     @interfaces = interfaces
     @protocols = protocols
-    @destinations = destinations
+    @sources = sources
+    @sports = sports
+    @dests = dests
+    @dports = dports
+    @state = state
   end
 
   def to_iptables
     if @action == "pass"
       chain = "ACCEPT"
     else
-      chain = "REJECT"
+      chain = @block_type.to_s.upcase
     end
 
     rules = []
 
+    has_state = false
     @interfaces.each do |int|
       @protocols.each do |proto|
-        rules << "#{@direction.to_iptables unless @direction.nil?}" +
-        "#{int.to_iptables(@direction.value)}" +
-        proto.to_iptables +
-        " -J #{chain}"
+        @sources.each do |src|
+          @sports.each do |sport|
+            @dests.each do |dest|
+              @dports.each do |dport|
+                rules << "#{@direction.to_iptables unless @direction.nil?}" +
+                int.to_iptables(@direction.value) +
+                "#{" -m state --state NEW" if @state and @action == "pass"}" +
+                proto.to_iptables +
+                src.to_iptables +
+                dest.to_iptables +
+                dport.to_iptables +
+                sport.to_iptables +
+                " -J #{chain}"
+                if @state
+                  has_state = true
+                end
+              end
+            end
+          end
+        end
       end
     end
-    rules
+    ["-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT"] << rules
   end
 end
 
@@ -101,5 +125,47 @@ class ProtocolNode
 
   def to_iptables
     " -p #{@value}"
+  end
+end
+
+class IPNode
+  def initialize(value, direction)
+    data = value.split("/")
+    ip = data.first
+    if data.length > 1
+      mask = data.last
+    else
+      mask = "32"
+    end
+    @ip = IPAddr.new(ip).mask(mask)
+    @mask = IPAddr.new("255.255.255.255").mask(mask)
+    @direction = direction
+  end
+
+  def to_iptables
+    if @direction == :dest
+      " -d #{@ip.to_s}/#{@mask.to_s}"
+    elsif @direction == :source
+      " -s #{@ip.to_s}/#{@mask.to_s}"
+    else
+      raise "Oh fuck"
+    end
+  end
+end
+
+class PortNode
+  def initialize(value, type)
+    @value = value
+    @type = type
+  end
+
+  def to_iptables
+    if @type == :source
+      " --sport #{@value}"
+    elsif @type == :dest
+      " --dport #{@value}"
+    else
+      raise "How'd you even get here?"
+    end
   end
 end

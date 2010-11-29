@@ -61,17 +61,18 @@ rule
     NEWLINE
   ;
 
-  # All hard-coded values
-  Literal:
-    NUMBER                        { result = LiteralNode.new(val[0]) }
-  | STRING                        { result = LiteralNode.new(val[0]) }
-  | IPADDRESS                     { result = LiteralNode.new(val[0]) }
+  Filter:
+    ACTION BlockType Direction Log 
+      Interface Protocol From     
+      FromPort To ToPort State    { result = FilterNode.new(val[0], val[1], val[2],
+                                        val[3], val[4], val[5], val[6], val[7], 
+                                        val[8], val[9], val[10]) }
   ;
 
-  Filter:
-    ACTION Direction Log 
-      Interface Protocol From     { result = FilterNode.new(val[0], val[1], val[2],
-                                        val[3], val[4]) }
+  BlockType:
+    /* nothing */                 { result = :reject }
+  | RETURN                        { result = :reject }
+  | DROP                          { result = :drop }
   ;
 
   Direction:
@@ -108,15 +109,57 @@ rule
 
   From:
     /* nothing */                 { result = [BlankNode.new] }
-  | FROM IPADDRESS                { result = [IPNode.new(val[1], :dest)] }
+  | FROM IPADDRESS                { result = [IPNode.new(val[1], :source)] }
   | FROM "{" FromList "}"         { result = val[2] }
+  | FROM ANY                      { result = [BlankNode.new] }
+  | FROM                          { result = [BlankNode.new] }
   ;
 
   FromList:
-    IPADDRESS                     { result = [IPNode.new(val[0], :dest)] }
-  | FromList IPADDRESS            { result = val[0] << IPNode.new(val[1], :dest) }
+    IPADDRESS                     { result = [IPNode.new(val[0], :source)] }
+  | FromList IPADDRESS            { result = val[0] << IPNode.new(val[1], :source) }
   ;
 
+  FromPort:
+    /* nothing */                 { result = [BlankNode.new] }
+  | PORT NUMBER                   { result = [PortNode.new(val[1], :source)] }
+  | PORT "{" FromPortList "}"     { result = val[2] }
+  ;
+
+  FromPortList:
+    NUMBER                        { result = [PortNode.new(val[0], :source)] }
+  | FromPortList NUMBER           { result = val[0] << PortNode.new(val[1], :source) }
+  ;
+
+  To:
+    /* nothing */                 { result = [BlankNode.new] }
+  | TO IPADDRESS                  { result = [IPNode.new(val[1], :dest)] }
+  | TO "{" ToList "}"             { result = val[2] }
+  | TO ANY                        { result = [BlankNode.new] }
+  | TO                            { result = [BlankNode.new] }
+  ;
+
+  ToList:
+    IPADDRESS                     { result = [IPNode.new(val[0], :dest)] }
+  | ToList IPADDRESS              { result = val[0] << IPNode.new(val[1], :dest) }
+  ;
+
+  ToPort:
+    /* nothing */                 { result = [BlankNode.new] }
+  | PORT NUMBER                   { result = [PortNode.new(val[1], :dest)] }
+  | PORT "{" ToPortList "}"       { result = val[2] }
+  ;
+
+  ToPortList:
+    NUMBER                        { result = [PortNode.new(val[0], :dest)] }
+  | ToPortList NUMBER             { result = val[0] << PortNode.new(val[0], :dest) }
+  ;
+
+  State:
+    /* nothing */                 { result = true }
+  | KEEP STATE                    { result = true }
+  | NO STATE                      { result = false } 
+  ;
 end
 
 ---- header

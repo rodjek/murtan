@@ -1,17 +1,16 @@
 #!/usr/bin/env ruby
 
-`racc -o parser.rb grammer.y`
+`racc -o parser.rb grammar.y`
 
-require 'parser.rb'
-
-# pass in on eth0 proto tcp from { 10.0.0.0/24 1.2.3.4 } port 22 to any port 33 keep state
-# block out log on eth1 from any to 10.0.0.1 port 1234 no state
+require 'parser'
 
 code = <<-EOS
-pass in log on { eth0 eth2 } proto { tcp icmp }
-block out on eth1 proto { tcp udp }
-pass in proto icmp
+pass in on lo
+pass in log on { eth0 eth2 } proto { tcp icmp } from { 1.2.3.4/24 } port { 22 21 } to port 22
+block drop out on eth1 proto { tcp udp } from 10.0.0.1 port { 80 443 } no state
+block in proto tcp from any to any port 22
+block in
 EOS
 
 foo = Parser.new.parse(code)
-foo.to_iptables.flatten.each { |rule| puts rule }
+foo.to_iptables.flatten.uniq.each { |rule| puts rule }
