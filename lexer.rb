@@ -47,6 +47,9 @@ class Lexer
         # Skip what we just parsed
         i += identifier.size
 
+      elsif var = chunk[/\A\$([a-z0-9_]+)/, 1]
+        tokens << [:VARIABLE, var]
+        i += var.size + 1
       elsif ip = chunk[/\A(([0-9]+\.){3}[0-9]+(\/[0-9]+)?)/, 1]
         tokens << [:IPADDRESS, ip]
         i += ip.size

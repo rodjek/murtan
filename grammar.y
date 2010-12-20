@@ -24,6 +24,7 @@ token NO
 token STATE
 token IPADDRESS
 token VARIABLE_NAME
+token VARIABLE
 
 rule
   # All rules are declared in this format
@@ -80,6 +81,7 @@ rule
   | NUMBER                        { result = val[0] }
   | IPADDRESS                     { result = val[0] }
   | STRING                        { result = val[0] }
+  | VARIABLE                      { result = MurtanNode.get_variable(val[0]) }
   ;
 
   Filter:
@@ -109,12 +111,15 @@ rule
   Interface:
     /* nothing */                 { result = [BlankNode.new] }
   | ON IDENTIFIER                 { result = [InterfaceNode.new(val[1])] }
+  | ON VARIABLE                   { result = MurtanNode.get_variable(val[1]).to_a.map { |int| InterfaceNode.new(int) } }
   | ON "{" InterfaceList "}"      { result = val[2] }
   ;
 
   InterfaceList:
     IDENTIFIER                    { result = [InterfaceNode.new(val[0])] }
+  | VARIABLE                      { result = [InterfaceNode.new(MurtanNode.get_variable(val[0]))] }
   | InterfaceList IDENTIFIER      { result = val[0] << InterfaceNode.new(val[1]) }
+  | InterfaceList VARIABLE        { result = val[0] << InterfaceNode.new(MurtanNode.get_variable(val[1])) }
   ;
 
   Protocol:
