@@ -12,7 +12,7 @@ class Nodes
   end
 
   def to_iptables
-    @nodes.compact.map { |node| node.to_iptables }
+    @nodes.compact.map { |node| node.to_iptables }.flatten.uniq
   end
 end
 
