@@ -1,9 +1,3 @@
-#!/usr/bin/env ruby
-
-require 'test/unit'
-require 'parser'
-require 'nodes'
-
 class Murtan_TestVariables < Test::Unit::TestCase
   def test_set_single_variable
     foo = Parser.new.parse('var = "eth1"')
