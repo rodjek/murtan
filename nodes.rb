@@ -79,7 +79,7 @@ class FilterNode < MurtanNode
                 dest.to_iptables +
                 dport.to_iptables +
                 sport.to_iptables +
-                " -J #{chain}"
+                " -j #{chain}"
                 if @state
                   has_state = true
                 end
