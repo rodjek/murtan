@@ -65,11 +65,9 @@ rule
   ;
 
   SetVariable:
-    VARIABLE_NAME "=" STRING      { result = MurtanNode.set_variable(val[0], val[2]) }
+    VARIABLE_NAME "=" StringListItem { result = MurtanNode.set_variable(val[0], val[2]) }
   | VARIABLE_NAME "=" 
     "{" StringList "}"            { result = MurtanNode.set_variable(val[0], val[3]) }
-  | VARIABLE_NAME "=" VARIABLE    { result = MurtanNode.set_variable(val[0],
-                                        MurtanNode.get_variable(val[2])) }
   ;
 
   StringList:
