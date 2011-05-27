@@ -25,6 +25,8 @@ token STATE
 token IPADDRESS
 token VARIABLE_NAME
 token VARIABLE
+token RDR
+token REDIRECT
 
 rule
   # All rules are declared in this format
@@ -41,16 +43,16 @@ rule
 
   # All parsing will end in this rule, being the trunk of the AST
   Root:
-    /* nothing */                      { result = Nodes.new([]) }
+    /* nothing */                      { result = FilterRules.new([]) }
   | Expressions                        { result = val[0] }
   ;
 
   # Any list of expressions, class or method body, separated by line breaks
   Expressions:
-    Expression                         { result = Nodes.new(val) }
+    Expression                         { result = FilterRules.new(val) }
   | Expressions Terminator Expression  { result = val[0] << val[2] }
     # To ignore trailing line breaks
-  | Expressions Terminator             { result = Nodes.new([val[0]]) }
+  | Expressions Terminator             { result = FilterRules.new([val[0]]) }
   ;
 
   # All types of expressions in our language
@@ -91,6 +93,11 @@ rule
                                         val[3], val[4], val[5], val[6], val[7], 
                                         val[8], val[9], val[10]) }
   ;
+
+  Redirect:
+    RDR Interface Protocol From
+      FromPort To ToPort          { result = RedirectNode.new(val[1], val[2],
+                                        val[3], val[4], val[5], val[6] }
 
   BlockType:
     /* nothing */                 { result = :reject }

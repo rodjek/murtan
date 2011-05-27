@@ -1,5 +1,5 @@
 class Lexer
-  KEYWORDS = ["return", "drop", "on", "log", "from", "port", "to", "proto", "any", "all", "keep", "no", "state"]
+  KEYWORDS = ["return", "drop", "on", "log", "from", "port", "to", "proto", "any", "all", "keep", "no", "state", "rdr", "redirect"]
   ACTIONS = ["pass", "block"]
   DIRECTIONS = ["in", "out"]
   ADDRESS_FAMILYS = ["ipv4", "ipv6"]

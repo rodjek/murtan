@@ -1,18 +1,18 @@
 require 'ipaddr'
 
 # Collection of nodes each one representing an expression
-class Nodes
-  def initialize(nodes)
-    @nodes = nodes
+class FilterRules
+  def initialize(rules)
+    @rules = rules
   end
   
-  def <<(node)
-    @nodes << node
+  def <<(rule)
+    @rules << rule
     self
   end
 
   def to_iptables
-    @nodes.compact.map { |node| node.to_iptables }.flatten.uniq
+    @rules.compact.map { |rule| rule.to_iptables }.flatten.uniq
   end
 end
 
@@ -30,6 +30,19 @@ class MurtanNode
       raise "Undefined variable $#{key} used.  Aborting"
     end
   end
+
+  def self.set_policy(direction, action)
+    class_variable_set("@@policy_#{direction.value.to_s}".to_sym, action)
+  end
+
+  def self.get_policy(direction)
+    key_sym = "@@policy_#{direction.value.to_s}".to_sym
+    if class_variable_defined? key_sym
+      class_variable_get(key_sym)
+    else
+      "pass"
+    end
+  end
 end
 
 # Literals are static values that have a Ruby representation. eg.: a string,
@@ -37,6 +50,17 @@ end
 class LiteralNode < MurtanNode
   def initialize(value)
     @value = value
+  end
+end
+
+class RedirectNode < MurtanNode
+  def initialize(interfaces, protocols, sources, source_ports, dests, dest_ports)
+    @interfaces = interfaces
+    @protocols = protocols
+    @sources = sources
+    @source_ports = source_ports
+    @dests = dests
+    @dest_ports = dest_ports
   end
 end
 

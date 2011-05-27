@@ -276,7 +276,7 @@ Racc_debug_parser = false
 
 module_eval(<<'.,.,', 'grammar.y', 43)
   def _reduce_1(val, _values, result)
-     result = Nodes.new([]) 
+     result = FilterRules.new([]) 
     result
   end
 .,.,
@@ -290,7 +290,7 @@ module_eval(<<'.,.,', 'grammar.y', 44)
 
 module_eval(<<'.,.,', 'grammar.y', 49)
   def _reduce_3(val, _values, result)
-     result = Nodes.new(val) 
+     result = FilterRules.new(val) 
     result
   end
 .,.,
@@ -304,7 +304,7 @@ module_eval(<<'.,.,', 'grammar.y', 50)
 
 module_eval(<<'.,.,', 'grammar.y', 52)
   def _reduce_5(val, _values, result)
-     result = Nodes.new([val[0]]) 
+     result = FilterRules.new([val[0]]) 
     result
   end
 .,.,
