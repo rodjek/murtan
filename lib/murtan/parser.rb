@@ -29,7 +29,8 @@ module Murtan
     rule(:protolist)          { open_brace >> space >> protocols.as(:str) >>
                                 (space >> protocols.as(:str)).repeat >>
                                 space >> close_brace }
-    rule(:protocol)           { (protocols | protolist).as(:protocol) }
+    rule(:protocol)           { str('proto') >> space >>
+                                (protocols | protolist).as(:protocol) }
 
     #########################################################################
     # DIRECTION

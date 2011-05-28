@@ -16,9 +16,9 @@ describe Murtan::Parser do
   context 'protocol' do
     subject { parser.protocol }
 
-    it { should parse('tcp').as(:protocol => 'tcp') }
-    it { should parse('udp').as(:protocol => 'udp') }
-    it { should parse('{ tcp udp }').as(
+    it { should parse('proto tcp').as(:protocol => 'tcp') }
+    it { should parse('proto udp').as(:protocol => 'udp') }
+    it { should parse('proto { tcp udp }').as(
       :protocol => [{:str => 'tcp'}, {:str => 'udp'}]) }
   end
 
