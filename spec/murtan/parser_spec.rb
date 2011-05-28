@@ -46,9 +46,9 @@ describe Murtan::Parser do
   context 'interface' do
     subject { parser.interface }
 
-    it { should parse('eth0').as(:interface => 'eth0') }
-    it { should parse('public').as(:interface => 'public') }
-    it { should parse('{ eth0 eth1 }').as(
+    it { should parse('on eth0').as(:interface => 'eth0') }
+    it { should parse('on public').as(:interface => 'public') }
+    it { should parse('on { eth0 eth1 }').as(
       :interface => [{:str => 'eth0'}, {:str => 'eth1'}]) }
   end
 end

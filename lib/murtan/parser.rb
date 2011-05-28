@@ -61,7 +61,7 @@ module Murtan
                                interface_name.as(:str) >>
                                (space >> interface_name.as(:str)).repeat >>
                                space >> close_brace }
-    rule(:interface)         { (interface_name |
+    rule(:interface)         { str('on') >> space >> (interface_name |
                                 interface_list).as(:interface) }
   end
 end
