@@ -51,5 +51,16 @@ module Murtan
     rule(:pass)               { str('pass') }
     rule(:block)              { str('block') }
     rule(:action)             { (pass | block).as(:action) }
+
+    #########################################################################
+    # INTERFACE
+
+    rule(:interface_name)    { match('[a-zA-Z0-9_-]').repeat(1) }
+    rule(:interface_list)    { open_brace >> space >>
+                               interface_name.as(:str) >>
+                               (space >> interface_name.as(:str)).repeat >>
+                               space >> close_brace }
+    rule(:interface)         { (interface_name |
+                                interface_list).as(:interface) }
   end
 end
