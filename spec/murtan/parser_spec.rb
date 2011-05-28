@@ -12,4 +12,13 @@ describe Murtan::Parser do
     it { should parse('1.2.3.0/255.255.255.0').as(
       :ip => '1.2.3.0', :netmask => '255.255.255.0')}
   end
+
+  context 'protocol' do
+    subject { parser.protocol }
+
+    it { should parse('tcp').as(:protocol => 'tcp') }
+    it { should parse('udp').as(:protocol => 'udp') }
+    it { should parse('{ tcp udp }').as(
+      :protocol => [{:str => 'tcp'}, {:str => 'udp'}]) }
+  end
 end
