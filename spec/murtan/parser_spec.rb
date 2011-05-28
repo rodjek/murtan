@@ -21,4 +21,11 @@ describe Murtan::Parser do
     it { should parse('{ tcp udp }').as(
       :protocol => [{:str => 'tcp'}, {:str => 'udp'}]) }
   end
+
+  context 'direction' do
+    subject { parser.direction }
+
+    it { should parse('in').as(:direction => 'in') }
+    it { should parse('out').as(:direction => 'out') }
+  end
 end

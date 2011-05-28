@@ -30,5 +30,12 @@ module Murtan
                                 (space >> protocols.as(:str)).repeat >>
                                 space >> close_brace }
     rule(:protocol)           { (protocols | protolist).as(:protocol) }
+
+    #########################################################################
+    # DIRECTION
+
+    rule(:dir_in)             { str('in') }
+    rule(:dir_out)            { str('out') }
+    rule(:direction)          { (dir_in | dir_out).as(:direction) }
   end
 end
