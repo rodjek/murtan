@@ -28,4 +28,18 @@ describe Murtan::Parser do
     it { should parse('in').as(:direction => 'in') }
     it { should parse('out').as(:direction => 'out') }
   end
+
+  context 'blocktype' do
+    subject { parser.blocktype }
+
+    it { should parse('reject').as(:blocktype => 'reject') }
+    it { should parse('drop').as(:blocktype => 'drop') }
+  end
+
+  context 'action' do
+    subject { parser.action }
+
+    it { should parse('pass').as(:action => 'pass') }
+    it { should parse('block').as(:action => 'block') }
+  end
 end

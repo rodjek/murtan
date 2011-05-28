@@ -37,5 +37,19 @@ module Murtan
     rule(:dir_in)             { str('in') }
     rule(:dir_out)            { str('out') }
     rule(:direction)          { (dir_in | dir_out).as(:direction) }
+
+    #########################################################################
+    # BLOCK TYPE
+
+    rule(:reject)             { str('reject') }
+    rule(:drop)               { str('drop') }
+    rule(:blocktype)          { (reject | drop).as(:blocktype) }
+
+    #########################################################################
+    # ACTION
+
+    rule(:pass)               { str('pass') }
+    rule(:block)              { str('block') }
+    rule(:action)             { (pass | block).as(:action) }
   end
 end
