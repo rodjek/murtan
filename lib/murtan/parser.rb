@@ -18,7 +18,11 @@ module Murtan
                                 integer.repeat(1, 3) }
     rule(:netmask_or_masklen) { slash >> (ip.as(:netmask) |
                                 integer.repeat(1).as(:masklen)) }
-    rule(:address)            { ip.as(:ip) >> netmask_or_masklen.maybe }
+    rule(:full_address)       { ip.as(:ip) >> netmask_or_masklen.maybe }
+    rule(:address_list)       { open_brace >> space >> full_address >>
+                                (space >> full_address).repeat >> space >>
+                                close_brace }
+    rule(:address)            { (full_address | address_list).as(:address) }
 
     #########################################################################
     # PROTOCOL

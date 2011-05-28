@@ -7,10 +7,16 @@ describe Murtan::Parser do
   context 'address' do
     subject { parser.address }
 
-    it { should parse('1.2.3.4').as(:ip => '1.2.3.4') }
-    it { should parse('1.2.3.0/24').as(:ip => '1.2.3.0', :masklen => '24') }
+    it { should parse('1.2.3.4').as(:address => {:ip => '1.2.3.4'}) }
+    it { should parse('1.2.3.0/24').as(
+      :address => {:ip => '1.2.3.0', :masklen => '24'}) }
     it { should parse('1.2.3.0/255.255.255.0').as(
-      :ip => '1.2.3.0', :netmask => '255.255.255.0')}
+      :address => {:ip => '1.2.3.0', :netmask => '255.255.255.0'}) }
+    it { should parse('{ 1.2.3.4 4.5.6.7 }').as(
+      :address => [{:ip => '1.2.3.4'}, {:ip => '4.5.6.7'}]) }
+    it { should parse('{ 1.2.3.4 10.0.0.0/24 }').as(
+      :address => [{:ip => '1.2.3.4'},
+                   {:ip => '10.0.0.0', :masklen => '24'}]) }
   end
 
   context 'protocol' do
