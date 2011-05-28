@@ -89,5 +89,13 @@ module Murtan
 
     rule(:to)                { str('to') >> space >>
                                (address >> (space >> port).maybe).as(:to) }
+
+    ##########################################################################
+    # STATE
+
+    rule(:keep_state)        { str('keep').as(:state) >> space >>
+                               str('state') }
+    rule(:no_state)          { str('no').as(:state) >> space >> str('state') }
+    rule(:state)             { keep_state | no_state }
   end
 end

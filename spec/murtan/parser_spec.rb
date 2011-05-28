@@ -83,4 +83,11 @@ describe Murtan::Parser do
     it { should parse('to 192.168.0.1 port 80').as(
       :to => {:address => {:ip => '192.168.0.1'}, :port => '80'}) }
   end
+
+  context 'state' do
+    subject { parser.state }
+
+    it { should parse('keep state').as(:state => 'keep') }
+    it { should parse('no state').as(:state => 'no') }
+  end
 end
