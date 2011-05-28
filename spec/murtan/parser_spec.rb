@@ -90,4 +90,57 @@ describe Murtan::Parser do
     it { should parse('keep state').as(:state => 'keep') }
     it { should parse('no state').as(:state => 'no') }
   end
+
+  context 'filter' do
+    subject { parser.filter }
+
+    rule1 = 'pass out on eth0 proto tcp from 192.168.0.1 to 10.0.0.1 port 80 keep state'
+    it { should parse(rule1).as(
+      :filter => {
+        :action => 'pass',
+        :direction => 'out',
+        :interface => 'eth0',
+        :protocol => 'tcp',
+        :from => {
+          :address => {
+            :ip => '192.168.0.1'
+          }
+        },
+        :to => {
+          :address => {
+            :ip => '10.0.0.1'
+          },
+          :port => '80'
+        },
+        :state => 'keep'
+      }
+    ) }
+
+    rule2 = 'block in reject on { eth0 eth1 } proto udp from { 10.0.0.0/24 10.0.1.0/255.255.255.0 } no state'
+    it { should parse(rule2).as(
+      :filter => {
+        :action => 'block',
+        :direction => 'in',
+        :blocktype => 'reject',
+        :interface => [
+          {:str => 'eth0'},
+          {:str => 'eth1'}
+        ],
+        :protocol => 'udp',
+        :from => {
+          :address => [
+            {
+              :ip => '10.0.0.0',
+              :masklen => '24'
+            },
+            {
+              :ip => '10.0.1.0',
+              :netmask => '255.255.255.0'
+            }
+          ]
+        },
+        :state => 'no'
+      }
+    ) }
+  end
 end

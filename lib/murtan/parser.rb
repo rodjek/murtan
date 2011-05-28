@@ -97,5 +97,16 @@ module Murtan
                                str('state') }
     rule(:no_state)          { str('no').as(:state) >> space >> str('state') }
     rule(:state)             { keep_state | no_state }
+
+    ##########################################################################
+    # FILTER
+
+    rule(:filter)            { (action >> space >> direction >> space >>
+                               (blocktype >> space).maybe >>
+                               (interface >> space).maybe >>
+                               (protocol >> space).maybe >>
+                               (from >> space).maybe >>
+                               (to >> space).maybe >>
+                               state.maybe).as(:filter) }
   end
 end
