@@ -63,5 +63,15 @@ module Murtan
                                space >> close_brace }
     rule(:interface)         { str('on') >> space >> (interface_name |
                                 interface_list).as(:interface) }
+
+    #########################################################################
+    # PORT
+
+    rule(:port_number)       { match('[0-9]').repeat(1) }
+    rule(:port_list)         { open_brace >> space >> port_number.as(:str) >>
+                               (space >> port_number.as(:str)).repeat >>
+                               space >> close_brace }
+    rule(:port)              { str('port') >> space >>
+                               (port_number | port_list).as(:port) }
   end
 end

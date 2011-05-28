@@ -51,4 +51,12 @@ describe Murtan::Parser do
     it { should parse('on { eth0 eth1 }').as(
       :interface => [{:str => 'eth0'}, {:str => 'eth1'}]) }
   end
+
+  context 'port' do
+    subject { parser.port }
+
+    it { should parse('port 80').as(:port => '80') }
+    it { should parse('port { 80 443 }').as(
+      :port => [{:str => '80'}, {:str => '443'}]) }
+  end
 end
