@@ -77,5 +77,17 @@ module Murtan
                                space >> close_brace }
     rule(:port)              { str('port') >> space >>
                                (port_number | port_list).as(:port) }
+
+    #########################################################################
+    # FROM
+
+    rule(:from)              { str('from') >> space >>
+                               (address >> (space >> port).maybe).as(:from) }
+
+    #########################################################################
+    # TO
+
+    rule(:to)                { str('to') >> space >>
+                               (address >> (space >> port).maybe).as(:to) }
   end
 end

@@ -65,4 +65,22 @@ describe Murtan::Parser do
     it { should parse('port { 80 443 }').as(
       :port => [{:str => '80'}, {:str => '443'}]) }
   end
+
+  context 'from' do
+    subject { parser.from }
+
+    it { should parse('from 192.168.0.1').as(
+      :from => {:address => {:ip => '192.168.0.1'}}) }
+    it { should parse('from 192.168.0.1 port 80').as(
+      :from => {:address => {:ip => '192.168.0.1'}, :port => '80'}) }
+  end
+
+  context 'to' do
+    subject { parser.to }
+
+    it { should parse('to 192.168.0.1').as(
+      :to => {:address => {:ip => '192.168.0.1'}}) }
+    it { should parse('to 192.168.0.1 port 80').as(
+      :to => {:address => {:ip => '192.168.0.1'}, :port => '80'}) }
+  end
 end
